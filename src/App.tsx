@@ -7,7 +7,11 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const filteredProducts = products.filter((product) => {
+  // Defensive checks for data
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeCategories = Array.isArray(categories) ? categories : ['All'];
+
+  const filteredProducts = safeProducts.filter((product) => {
     const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.brand.toLowerCase().includes(searchQuery.toLowerCase());
@@ -49,7 +53,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories */}
         <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((category) => (
+          {safeCategories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
